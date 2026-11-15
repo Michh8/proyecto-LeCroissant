@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+.local
+node_modules
+dist
+coverage
+*.tsbuildinfo
+*.log
+**/*.csv
+**/*.xlsx
+**/*.xls
+**/*.tsv
+codex-clipboard-*

@@ -1,0 +1,17 @@
+export type IssueFlag = 'MISSING_CHECK_OUT'|'INVALID_DATE'|'INVALID_CHECK_IN'|'INVALID_CHECK_OUT'|'INVALID_DURATION'|'ZERO_DURATION'|'POSSIBLE_DUPLICATE'|'EMPLOYEE_MATCH_REQUIRED'|'NEEDS_EMPLOYEE_REVIEW'|'DURATION_MISMATCH';
+export type ReviewStatus = 'pending'|'reviewed'|'resolved'|'ignored';
+export interface Profile { id:string; email:string; full_name:string; role:'ADMIN'|'HR'; active:boolean; created_at:string }
+export interface RawRow { first_name:string; last_name:string; date:string; check_in:string; check_out:string; duration:string; source_row:number }
+export interface ParsedRow { raw:RawRow; first_name:string; last_name:string; normalized_name:string; work_date:string|null; check_in:string|null; check_out:string|null; duration_minutes:number|null; issue_flags:IssueFlag[]; valid:boolean; fingerprint:string }
+export interface ImportMetadata { exported_at:string|null; hikcentral_operator:string|null; period_start:string|null; period_end:string|null }
+export interface ParsedFile { metadata:ImportMetadata; rows:ParsedRow[]; employees:number; valid:number; issues:number; duplicates:number; headerRow:number }
+export interface AttendanceImport extends ImportMetadata { id:string; original_filename:string; storage_path:string; file_checksum:string; file_size:number; uploaded_by:string; total_rows:number; valid_rows:number; issue_rows:number; duplicate_rows:number; inserted_rows:number; status:string; created_at:string }
+export interface AttendanceRecord { id:string; import_id:string; employee_id:string|null; raw_first_name:string; raw_last_name:string; normalized_name:string; work_date:string|null; check_in:string|null; check_out:string|null; duration_minutes:number|null; raw_duration:string; raw_row:RawRow; source_row:number; issue_flags:IssueFlag[]; review_status:ReviewStatus; valid:boolean; created_at:string }
+export interface Employee { id:string; first_name:string; last_name:string; normalized_name:string; external_employee_id:string|null; hikcentral_employee_id:string|null; odoo_employee_id:string|null; branch_id:string|null; active:boolean; created_at:string; record_count:number; first_date:string|null; last_date:string|null; issue_count:number }
+export interface RecordNote { id:string; record_id:string; user_id:string; body:string; created_at:string }
+export interface RecordEvent { id:string; record_id:string; user_id:string; previous_status:ReviewStatus; next_status:ReviewStatus; created_at:string }
+export interface AuditLog { id:string; user_id:string; action:string; entity_type:string; entity_id:string|null; metadata:Record<string,unknown>; created_at:string }
+export interface Filters { search:string; from:string; to:string; importId:string; issue:string; review:string; sort:'work_date'|'normalized_name'|'duration_minutes'; ascending:boolean }
+export const emptyFilters:Filters={search:'',from:'',to:'',importId:'',issue:'',review:'',sort:'work_date',ascending:false};
+export const issueLabels:Record<IssueFlag,string>={MISSING_CHECK_OUT:'Sin marcación de salida',INVALID_DATE:'Fecha inválida',INVALID_CHECK_IN:'Entrada inválida',INVALID_CHECK_OUT:'Salida inválida',INVALID_DURATION:'Duración inválida',ZERO_DURATION:'Duración en cero',POSSIBLE_DUPLICATE:'Posible duplicado o corrección',EMPLOYEE_MATCH_REQUIRED:'Empleado sin identificar',NEEDS_EMPLOYEE_REVIEW:'Nombre ambiguo',DURATION_MISMATCH:'Duración no coincide'};
+export const reviewLabels:Record<ReviewStatus,string>={pending:'Pendiente',reviewed:'Revisado',resolved:'Resuelto',ignored:'Ignorado'};
